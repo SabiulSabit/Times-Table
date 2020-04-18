@@ -2,6 +2,7 @@
 var playing = false;
 var score,action;
 var timeRemaining;
+ var correctAns;
 
 //click start/restart
 document.getElementById('startReset').onclick =function functionName() {
@@ -13,7 +14,7 @@ document.getElementById('startReset').onclick =function functionName() {
      else {  // if not playing
           score = 0;
           playing = true;
-          timeRemaining=10;
+          timeRemaining=60;
           document.getElementById("scoreValue").innerHTML = score;
           document.getElementById("timeRemainingValue").innerHTML = timeRemaining;
           show("timeRemaining");
@@ -25,9 +26,36 @@ document.getElementById('startReset').onclick =function functionName() {
 
           //generet qustion
           generetQusAndAns();
-
      }
 }
+
+//click in the option box
+for(i=1;i<5;i++){
+
+ document.getElementById("box"+i).onclick = function () {
+    //if playing
+    if(playing == true){
+      if(this.innerHTML == correctAns){ //if correct option
+        score++;
+        document.getElementById("scoreValue").innerHTML = score;
+        hide('wrong');
+        show('correct');
+        setTimeout(function(){
+          hide('correct');
+          generetQusAndAns();// new qus
+        },1000);
+      }
+      else{ //if wrong option
+         hide('correct');
+         show('wrong');
+         setTimeout(function(){
+           hide('wrong');
+         },1000);
+      }
+    }
+  }
+}
+
 
 
 // start counter
@@ -63,5 +91,26 @@ function show(Id){
 
 //generet Qustion And Answer
 function generetQusAndAns(){
+   //generet value 1-10
+   var x =  Math.round(9 * Math.random()) + 1 ;
+   var y =  Math.round(9 * Math.random()) + 1 ;
+   //answer
+   correctAns =  x*y;
+   document.getElementById("question").innerHTML= x + " X " +y;
 
+   var corrAnsPos = Math.round(3 * Math.random()) + 1 ; /// fill one box with the correct ans randomply by generating pos
+   document.getElementById("box"+corrAnsPos).innerHTML = correctAns;
+
+   // other 3 box
+   var option =[correctAns] ;
+   for(i=1;i<5 ;i++){
+     if(i != corrAnsPos){
+       var wrongAns;
+       do{ // check all value are diffrent
+           wrongAns = (1+ Math.round(9*Math.random()))*(1+ Math.round(9*Math.random()));
+       }while(option.indexOf(wrongAns)>-1);
+       option.push(wrongAns);
+      document.getElementById("box"+i).innerHTML = wrongAns;
+     }
+   }
 }
